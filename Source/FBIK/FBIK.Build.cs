@@ -13,7 +13,7 @@ public class FBIK : ModuleRules
 			{
 				"Core", 
 				"AnimGraphRuntime",
-				"PBIK",  // @TODO remove
+				"PBIK",
 			}
 			);
 			
