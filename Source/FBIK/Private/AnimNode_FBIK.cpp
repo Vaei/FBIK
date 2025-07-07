@@ -22,14 +22,14 @@ bool FAnimNode_FBIK::IsValidToEvaluate(const USkeleton* Skeleton, const FBoneCon
 void FAnimNode_FBIK::InitializeBoneReferences(const FBoneContainer& RequiredBones)
 {
 	RootBone.Initialize(RequiredBones);
-	for (FBoneReference& Ref : ExcludedBones) Ref.Initialize(RequiredBones);
+	for (FBoneReference& Ref : ExcludedBones.ExcludedBones) Ref.Initialize(RequiredBones);
 }
 
 FHashBuilder FAnimNode_FBIK::BuildHash() const
 {
 	FHashBuilder Hash;
-	for (const FPBIKEffector& Eff : Effectors) Hash << Eff.Bone;
-	for (const FPBIKBoneSetting& Set : BoneSettings) Hash << Set.Bone;
+	for (const FPBIKEffector& Eff : Effectors.Effectors) Hash << Eff.Bone;
+	for (const FPBIKBoneSetting& Set : BoneSettings.BoneSettings) Hash << Set.Bone;
 	return Hash;
 }
 
@@ -66,7 +66,7 @@ void FAnimNode_FBIK::InitializeSolverIfNeeded(const FBoneContainer& BoneContaine
 		}
 		FName BoneName = BoneContainer.GetReferenceSkeleton().GetBoneName(SkeletonIndex);
 
-		if (ExcludedBones.ContainsByPredicate([&](const FBoneReference& Ref){ return Ref.BoneName == BoneName; }))
+		if (ExcludedBones.ExcludedBones.ContainsByPredicate([&](const FBoneReference& Ref){ return Ref.BoneName == BoneName; }))
 		{
 			continue;
 		}
@@ -83,7 +83,7 @@ void FAnimNode_FBIK::InitializeSolverIfNeeded(const FBoneContainer& BoneContaine
 		BoneIndices.Add(Index);
 	}
 
-	for (const FPBIKEffector& Eff : Effectors)
+	for (const FPBIKEffector& Eff : Effectors.Effectors)
 		EffectorSolverIndices.Add(WorkData.Solver.AddEffector(Eff.Bone));
 
 	WorkData.Solver.Initialize();
@@ -102,18 +102,18 @@ void FAnimNode_FBIK::EvaluateSkeletalControl_AnyThread(FComponentSpacePoseContex
 		WorkData.Solver.SetBoneTransform(i, CSPose.GetComponentSpaceTransform(SolverBoneToPoseIndex[i]));
 	}
 
-	for (int32 BSI = 0; BSI < BoneSettings.Num(); ++BSI)
+	for (int32 BSI = 0; BSI < BoneSettings.BoneSettings.Num(); ++BSI)
 	{
-		const int32 Idx = WorkData.Solver.GetBoneIndex(BoneSettings[BSI].Bone);
+		const int32 Idx = WorkData.Solver.GetBoneIndex(BoneSettings.BoneSettings[BSI].Bone);
 		if (Idx == INDEX_NONE) continue;
 		if (PBIK::FBoneSettings* BSettings = WorkData.Solver.GetBoneSettings(Idx))
-			BoneSettings[BSI].CopyToCoreStruct(*BSettings);
+			BoneSettings.BoneSettings[BSI].CopyToCoreStruct(*BSettings);
 	}
 
-	for (int32 E = 0; E < Effectors.Num(); ++E)
+	for (int32 E = 0; E < Effectors.Effectors.Num(); ++E)
 	{
 		if (EffectorSolverIndices[E] == -1) continue;
-		const FPBIKEffector& Eff = Effectors[E];
+		const FPBIKEffector& Eff = Effectors.Effectors[E];
 		PBIK::FEffectorSettings S;
 		S.PositionAlpha = Eff.PositionAlpha;
 		S.RotationAlpha = Eff.RotationAlpha;

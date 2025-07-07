@@ -7,6 +7,7 @@
 #include "BoneIndices.h"
 #include "BoneContainer.h"
 #include "BonePose.h"
+#include "FBIKTypes.h"
 #include "BoneControllers/AnimNode_SkeletalControlBase.h"
 #include "PBIK_Shared.h"
 #include "RigUnit_PBIK.h"
@@ -23,29 +24,24 @@ struct FBIK_API FAnimNode_FBIK : public FAnimNode_SkeletalControlBase
 	GENERATED_USTRUCT_BODY()
 
 	/** The root of the solver. Bones above this will be ignored. */
-	UPROPERTY(EditAnywhere, Category=Solver, meta=(PinHiddenByDefault))
+	UPROPERTY(EditAnywhere, Category=Solver)
 	FBoneReference RootBone;
 
 	/** Target effectors for solving. */
 	UPROPERTY(EditAnywhere, Category=Solver, meta=(PinHiddenByDefault))
-	TArray<FPBIKEffector> Effectors;
+	FFBIKEffectors Effectors;
 
 	/** Settings for each bone. */
 	UPROPERTY(EditAnywhere, Category=Solver, meta=(PinHiddenByDefault))
-	TArray<FPBIKBoneSetting> BoneSettings;
+	FFBIKBoneSettings BoneSettings;
 
 	/** Bones that should not move. */
 	UPROPERTY(EditAnywhere, Category=Solver, meta=(PinHiddenByDefault))
-	TArray<FBoneReference> ExcludedBones;
+	FFBIKExcludedBones ExcludedBones;
 
 	/** Global solver settings. */
 	UPROPERTY(EditAnywhere, Category=Solver, meta=(PinHiddenByDefault))
 	FPBIKSolverSettings Settings;
-
-#if WITH_EDITORONLY_DATA
-	UPROPERTY(EditAnywhere, Category=Debug)
-	bool bEnableDebugDraw = false;
-#endif
 
 	FAnimNode_FBIK();
 
