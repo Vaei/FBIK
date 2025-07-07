@@ -3,7 +3,6 @@
 #include "AnimNode_FBIK.h"
 #include "AnimationRuntime.h"
 #include "Animation/AnimInstanceProxy.h"
-#include "PBIK.h"
 
 #include UE_INLINE_GENERATED_CPP_BY_NAME(AnimNode_FBIK)
 
