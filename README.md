@@ -7,8 +7,8 @@
 
 > [!NOTE]
 > The Full Body IK node in Control Rig is really good
-> <br>Climbing ladders, proning on the ground, mantling all benefit from a good FBIK solution
-> <br>However Control Rig can be clunky and take a lot of work to get setup, this allows you to get the same behaviour without any Control Rig
+> <br>Climbing ladders, proning on the ground, mantling, etc., all benefit from a good FBIK solution
+> <br>This allows you to get the same behaviour without any Control Rig
 
 # Installation
 
@@ -25,8 +25,8 @@
 
 Download the version that corresponds to the engine version you are using.
 
-[Download for 5.6](TODO) or 
-[Download for 5.5](TODO)
+[Download for 5.6](https://drive.google.com/file/d/1zrEilb6nKF8H-jRnV_6yuMrYGsCX57tQ/view?usp=sharing) or 
+[Download for 5.5](https://drive.google.com/file/d/1Ca_DBYam8Cq-yv_to5rBrILX3XsY1uLv/view?usp=sharing)
 
 Create a `Plugins` folder in your project directory, or you can create it in your Engine's `Plugins\Marketplace` folder if you would prefer to install to the engine instead. Extract the plugin from the zip file into this folder.
 
