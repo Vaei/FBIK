@@ -3,6 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "Animation/BoneReference.h"
 #include "FBIKTypes.generated.h"
 
 struct FPBIKBoneSetting;

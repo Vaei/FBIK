@@ -14,6 +14,32 @@
 
 ![UnrealEditor-Win64-DebugGame_2025-07-08_11-29-26](https://github.com/user-attachments/assets/23cd43ab-cf5b-49eb-94fb-062b139eb0f1)
 
+# Tip
+
+This is a psuedo-code snippet that shows how to move a bone to a specific location in World Space.
+
+If you add the resulting `FPBIKEffector&` to your `TArray<FPBIKEffector> Effectors` contained in `FFBIKEffectors`, which is connected to the `Full-Body IK` node's `Effectors` pin, then the hand will go to the provided `WorldLocation`.
+
+```cpp
+void MoveEffectorToWorldLocation(FPBIKEffector& Effector, const FVector& WorldLocation, const USkeletalMeshComponent* Mesh)
+{
+	// We're only doing translation for this example
+	Effector.RotationAlpha = 0.f;
+
+	// Mesh transform in world space
+	const FTransform& MeshWorldTM = Mesh->GetComponentTransform();
+
+	// Effector bone transform in world space -- not actually required for this, but if you want to adjust it from where it already is...
+	const FTransform BoneWorldTM = Mesh->GetSocketTransform(Effector.Bone, RTS_World);
+
+	// Convert from World Space to Component Space (this is what the node wants)
+	const FVector BoneCompLocation = MeshWorldTM.InverseTransformPosition(WorldLocation);
+
+	// Set the location to the new location
+	Effector.Transform.SetLocation(LeftHandLocation);
+}
+```
+
 # Installation
 
 ## Pre-Compiled Binaries
