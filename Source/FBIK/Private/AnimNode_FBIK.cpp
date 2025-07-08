@@ -99,6 +99,8 @@ void FAnimNode_FBIK::EvaluateSkeletalControl_AnyThread(FComponentSpacePoseContex
 
 	for (int32 i = 0; i < SolverBoneToPoseIndex.Num(); ++i)
 	{
+		check(CSPose.GetPose().IsValidIndex(SolverBoneToPoseIndex[i]));
+		
 		WorkData.Solver.SetBoneTransform(i, CSPose.GetComponentSpaceTransform(SolverBoneToPoseIndex[i]));
 	}
 
