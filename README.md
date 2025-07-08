@@ -14,7 +14,7 @@
 
 ![UnrealEditor-Win64-DebugGame_2025-07-08_11-29-26](https://github.com/user-attachments/assets/23cd43ab-cf5b-49eb-94fb-062b139eb0f1)
 
-# Guide
+# Tip
 
 This is a psuedo-code snippet that shows how to move a bone to a specific location in World Space.
 
