@@ -24,7 +24,7 @@ struct FBIK_API FAnimNode_FBIK : public FAnimNode_SkeletalControlBase
 	GENERATED_USTRUCT_BODY()
 
 	/** The root of the solver. Bones above this will be ignored. */
-	UPROPERTY(EditAnywhere, Category=Solver, meta=(PinHiddenByDefault))
+	UPROPERTY(EditAnywhere, Category=Solver)
 	FBoneReference RootBone;
 
 	/** Target effectors for solving. */
