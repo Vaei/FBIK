@@ -55,7 +55,7 @@ private:
 	TArray<FCompactPoseBoneIndex> SolverBoneToPoseIndex;
 	TArray<int32> EffectorSolverIndices;
 
-	FHashBuilder BuildHash() const;
+	FHashBuilder BuildHash(const FBoneContainer& BoneContainer) const;
 	void InitializeSolverIfNeeded(const FBoneContainer& BoneContainer, FCSPose<FCompactPose>& CSPose);
 	int32 GetParentSolverIndex(const FCompactPoseBoneIndex& Index, const TArray<FCompactPoseBoneIndex>& PoseBoneIndices, const FBoneContainer& BoneContainer) const;
 };

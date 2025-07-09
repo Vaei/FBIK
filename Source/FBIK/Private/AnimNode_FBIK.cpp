@@ -25,11 +25,23 @@ void FAnimNode_FBIK::InitializeBoneReferences(const FBoneContainer& RequiredBone
 	for (FBoneReference& Ref : ExcludedBones.ExcludedBones) Ref.Initialize(RequiredBones);
 }
 
-FHashBuilder FAnimNode_FBIK::BuildHash() const
+FHashBuilder FAnimNode_FBIK::BuildHash(const FBoneContainer& BoneContainer) const
 {
 	FHashBuilder Hash;
-	for (const FPBIKEffector& Eff : Effectors.Effectors) Hash << Eff.Bone;
-	for (const FPBIKBoneSetting& Set : BoneSettings.BoneSettings) Hash << Set.Bone;
+
+	// Include number of bones in compact pose (e.g., to detect LOD changes)
+	Hash << BoneContainer.GetCompactPoseNumBones();
+
+	for (const FPBIKEffector& Eff : Effectors.Effectors)
+	{
+		Hash << Eff.Bone;
+	}
+
+	for (const FPBIKBoneSetting& Set : BoneSettings.BoneSettings)
+	{
+		Hash << Set.Bone;
+	}
+
 	return Hash;
 }
 
@@ -46,7 +58,7 @@ int32 FAnimNode_FBIK::GetParentSolverIndex(const FCompactPoseBoneIndex& Index, c
 
 void FAnimNode_FBIK::InitializeSolverIfNeeded(const FBoneContainer& BoneContainer, FCSPose<FCompactPose>& CSPose)
 {
-	const uint32 Hash = BuildHash().GetHash();
+	const uint32 Hash = BuildHash(BoneContainer).GetHash();
 	WorkData.bNeedsInit |= WorkData.HashInitializedWith != Hash;
 	if (!WorkData.bNeedsInit) return;
 
@@ -55,26 +67,28 @@ void FAnimNode_FBIK::InitializeSolverIfNeeded(const FBoneContainer& BoneContaine
 	EffectorSolverIndices.Reset();
 
 	TArray<FCompactPoseBoneIndex> BoneIndices;
-	for (const FBoneIndexType& BoneIndex : BoneContainer.GetBoneIndicesArray())
+	const int32 MaxPoseBones = CSPose.GetPose().GetNumBones();
+
+	for (int32 BoneIdx = 0; BoneIdx < MaxPoseBones; ++BoneIdx)
 	{
-		FCompactPoseBoneIndex Index(BoneIndex);
+		const FCompactPoseBoneIndex Index(BoneIdx);
 		const int32 SkeletonIndex = BoneContainer.GetSkeletonIndex(Index);
 		if (!BoneContainer.GetReferenceSkeleton().IsValidIndex(SkeletonIndex))
 		{
-			// Ignore bones that are not in the reference skeleton
 			continue;
 		}
-		FName BoneName = BoneContainer.GetReferenceSkeleton().GetBoneName(SkeletonIndex);
+		const FName BoneName = BoneContainer.GetReferenceSkeleton().GetBoneName(SkeletonIndex);
 
-		if (ExcludedBones.ExcludedBones.ContainsByPredicate([&](const FBoneReference& Ref){ return Ref.BoneName == BoneName; }))
+		if (ExcludedBones.ExcludedBones.ContainsByPredicate([&](const FBoneReference& Ref) { return Ref.BoneName == BoneName; }))
 		{
 			continue;
 		}
-		
+
 		const int32 ParentIdx = GetParentSolverIndex(Index, BoneIndices, BoneContainer);
-		FTransform InitXf = CSPose.GetComponentSpaceTransform(Index);
+		const FTransform InitXf = CSPose.GetComponentSpaceTransform(Index);
 		const bool bIsRoot = (BoneName == RootBone.BoneName);
 		const int32 SolverIdx = WorkData.Solver.AddBone(BoneName, ParentIdx, InitXf.GetLocation(), InitXf.GetRotation(), bIsRoot);
+
 		if (SolverBoneToPoseIndex.Num() <= SolverIdx)
 		{
 			SolverBoneToPoseIndex.SetNumUninitialized(SolverIdx + 1);
@@ -82,6 +96,7 @@ void FAnimNode_FBIK::InitializeSolverIfNeeded(const FBoneContainer& BoneContaine
 		SolverBoneToPoseIndex[SolverIdx] = Index;
 		BoneIndices.Add(Index);
 	}
+
 
 	for (const FPBIKEffector& Eff : Effectors.Effectors)
 		EffectorSolverIndices.Add(WorkData.Solver.AddEffector(Eff.Bone));
@@ -94,6 +109,13 @@ void FAnimNode_FBIK::InitializeSolverIfNeeded(const FBoneContainer& BoneContaine
 void FAnimNode_FBIK::EvaluateSkeletalControl_AnyThread(FComponentSpacePoseContext& Output, TArray<FBoneTransform>& OutBoneTransforms)
 {
 	FCSPose<FCompactPose>& CSPose = Output.Pose;
+	
+	if (SolverBoneToPoseIndex.Num() > CSPose.GetPose().GetNumBones())
+	{
+		// The pose has fewer bones than expected, force reinit
+		WorkData.bNeedsInit = true;
+	}
+	
 	InitializeSolverIfNeeded(Output.AnimInstanceProxy->GetRequiredBones(), CSPose);
 	if (!WorkData.Solver.IsReadyToSimulate()) return;
 
