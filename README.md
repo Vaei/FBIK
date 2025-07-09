@@ -91,6 +91,9 @@ The "Full-Body IK" node will now be available to use in Anim Graph.
 
 ## Changelog
 
+### 1.0.3
+* List "FullBodyIK" plugin as dependency in .uplugin
+
 ### 1.0.2
 * `RootBone` exposed as pin (`PinHiddenByDefault`)
 
