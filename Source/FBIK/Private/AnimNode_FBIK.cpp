@@ -148,10 +148,11 @@ void FAnimNode_FBIK::EvaluateSkeletalControl_AnyThread(FComponentSpacePoseContex
 		S.PinRotation = Eff.PinRotation;
 		S.InterpWeight = Eff.InterpWeight;
 		S.InterpGoal = Eff.InterpGoal;
-		WorkData.Solver.SetEffectorGoal(EffectorSolverIndices[E], Eff.Transform.GetLocation(), Eff.Transform.GetRotation(), S);
+		WorkData.Solver.SetEffectorGoal(EffectorSolverIndices[E], Eff.Transform.GetLocation(),
+			Eff.Transform.GetRotation(), S, Output.AnimInstanceProxy->GetDeltaSeconds());
 	}
 
-	WorkData.Solver.Solve(Settings, Output.AnimInstanceProxy->GetDeltaSeconds(), true);
+	WorkData.Solver.Solve(Settings);
 	for (int32 i = 0; i < SolverBoneToPoseIndex.Num(); ++i)
 	{
 		FTransform NewTransform;
