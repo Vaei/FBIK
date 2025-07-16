@@ -139,12 +139,15 @@ void FAnimNode_FBIK::EvaluateSkeletalControl_AnyThread(FComponentSpacePoseContex
 		if (EffectorSolverIndices[E] == -1) continue;
 		const FPBIKEffector& Eff = Effectors.Effectors[E];
 		PBIK::FEffectorSettings S;
+		S.Weight = Eff.Weight;
 		S.PositionAlpha = Eff.PositionAlpha;
 		S.RotationAlpha = Eff.RotationAlpha;
 		S.StrengthAlpha = Eff.StrengthAlpha;
 		S.ChainDepth = Eff.ChainDepth;
 		S.PullChainAlpha = Eff.PullChainAlpha;
 		S.PinRotation = Eff.PinRotation;
+		S.InterpWeight = Eff.InterpWeight;
+		S.InterpGoal = Eff.InterpGoal;
 		WorkData.Solver.SetEffectorGoal(EffectorSolverIndices[E], Eff.Transform.GetLocation(), Eff.Transform.GetRotation(), S);
 	}
 
