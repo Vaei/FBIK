@@ -16,7 +16,7 @@ struct FFBIKEffectors
 	GENERATED_BODY()
 
 	/** Target effectors for solving. */
-	UPROPERTY(EditAnywhere, Category=Solver)
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category=Solver)
 	TArray<FPBIKEffector> Effectors;
 };
 
@@ -27,7 +27,7 @@ struct FFBIKBoneSettings
 	GENERATED_BODY()
 
 	/** Settings for each bone. */
-	UPROPERTY(EditAnywhere, Category=Solver)
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category=Solver)
 	TArray<FPBIKBoneSetting> BoneSettings;
 };
 
