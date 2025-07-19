@@ -11,7 +11,8 @@ public class FBIKGraphNodes : ModuleRules
             {
                 "Core",
                 "FBIK",
-                "AnimGraph", 
+                "AnimGraph",
+                "AnimGraphRuntime",
                 "BlueprintGraph",
             }
         );

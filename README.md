@@ -91,6 +91,9 @@ The "Full-Body IK" node will now be available to use in Anim Graph.
 
 ## Changelog
 
+### 1.0.4
+* Add `AnimGraphRuntime` to `FBIKGraphNodes.Build.cs` public deps for clang
+
 ### 1.0.3
 * Rollback 1.0.2 - `FBoneReference` is not blueprint type, pin does not make sense
 * List "FullBodyIK" plugin as dependency in .uplugin
