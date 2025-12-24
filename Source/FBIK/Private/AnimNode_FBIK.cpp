@@ -32,12 +32,12 @@ FHashBuilder FAnimNode_FBIK::BuildHash(const FBoneContainer& BoneContainer) cons
 	// Include number of bones in compact pose (e.g., to detect LOD changes)
 	Hash << BoneContainer.GetCompactPoseNumBones();
 
-	for (const FPBIKEffector& Eff : Effectors.Effectors)
+	for (const FLocoPBIKEffector& Eff : Effectors.Effectors)
 	{
 		Hash << Eff.Bone;
 	}
 
-	for (const FPBIKBoneSetting& Set : BoneSettings.BoneSettings)
+	for (const FLocoPBIKBoneSetting& Set : BoneSettings.BoneSettings)
 	{
 		Hash << Set.Bone;
 	}
@@ -98,7 +98,7 @@ void FAnimNode_FBIK::InitializeSolverIfNeeded(const FBoneContainer& BoneContaine
 	}
 
 
-	for (const FPBIKEffector& Eff : Effectors.Effectors)
+	for (const FLocoPBIKEffector& Eff : Effectors.Effectors)
 		EffectorSolverIndices.Add(WorkData.Solver.AddEffector(Eff.Bone));
 
 	WorkData.Solver.Initialize();
@@ -130,15 +130,15 @@ void FAnimNode_FBIK::EvaluateSkeletalControl_AnyThread(FComponentSpacePoseContex
 	{
 		const int32 Idx = WorkData.Solver.GetBoneIndex(BoneSettings.BoneSettings[BSI].Bone);
 		if (Idx == INDEX_NONE) continue;
-		if (PBIK::FBoneSettings* BSettings = WorkData.Solver.GetBoneSettings(Idx))
+		if (LocoPBIK::FLocoBoneSettings* BSettings = WorkData.Solver.GetBoneSettings(Idx))
 			BoneSettings.BoneSettings[BSI].CopyToCoreStruct(*BSettings);
 	}
 
 	for (int32 E = 0; E < Effectors.Effectors.Num(); ++E)
 	{
 		if (EffectorSolverIndices[E] == -1) continue;
-		const FPBIKEffector& Eff = Effectors.Effectors[E];
-		PBIK::FEffectorSettings S;
+		const FLocoPBIKEffector& Eff = Effectors.Effectors[E];
+		LocoPBIK::FLocoEffectorSettings S;
 		S.Weight = Eff.Weight;
 		S.PositionAlpha = Eff.PositionAlpha;
 		S.RotationAlpha = Eff.RotationAlpha;

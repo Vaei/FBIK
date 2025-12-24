@@ -6,8 +6,8 @@
 #include "Animation/BoneReference.h"
 #include "FBIKTypes.generated.h"
 
-struct FPBIKBoneSetting;
-struct FPBIKEffector;
+struct FLocoPBIKBoneSetting;
+struct FLocoPBIKEffector;
 
 /** Target effectors for solving. */
 USTRUCT(BlueprintType)
@@ -17,7 +17,7 @@ struct FFBIKEffectors
 
 	/** Target effectors for solving. */
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category=Solver)
-	TArray<FPBIKEffector> Effectors;
+	TArray<FLocoPBIKEffector> Effectors;
 };
 
 /** Settings for each bone. */
@@ -28,7 +28,7 @@ struct FFBIKBoneSettings
 
 	/** Settings for each bone. */
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category=Solver)
-	TArray<FPBIKBoneSetting> BoneSettings;
+	TArray<FLocoPBIKBoneSetting> BoneSettings;
 };
 
 /** Bones that should not move. */

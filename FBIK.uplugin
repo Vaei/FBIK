@@ -28,7 +28,7 @@
 	],
 	"Plugins": [
 		{
-			"Name": "FullBodyIK",
+			"Name": "LocoFullBodyIK",
 			"Enabled": true
 		}
 	]
