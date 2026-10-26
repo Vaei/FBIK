@@ -72,12 +72,13 @@ void FAnimNode_FBIK::InitializeSolverIfNeeded(const FBoneContainer& BoneContaine
 	for (int32 BoneIdx = 0; BoneIdx < MaxPoseBones; ++BoneIdx)
 	{
 		const FCompactPoseBoneIndex Index(BoneIdx);
-		const int32 SkeletonIndex = BoneContainer.GetSkeletonIndex(Index);
-		if (!BoneContainer.GetReferenceSkeleton().IsValidIndex(SkeletonIndex))
+		// The bone container's reference skeleton is the mesh's, which can order bones differently to the skeleton
+		const int32 MeshIndex = BoneContainer.MakeMeshPoseIndex(Index).GetInt();
+		if (!BoneContainer.GetReferenceSkeleton().IsValidIndex(MeshIndex))
 		{
 			continue;
 		}
-		const FName BoneName = BoneContainer.GetReferenceSkeleton().GetBoneName(SkeletonIndex);
+		const FName BoneName = BoneContainer.GetReferenceSkeleton().GetBoneName(MeshIndex);
 
 		if (ExcludedBones.ExcludedBones.ContainsByPredicate([&](const FBoneReference& Ref) { return Ref.BoneName == BoneName; }))
 		{
